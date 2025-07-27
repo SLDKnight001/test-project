@@ -8,9 +8,10 @@ import { ShoppingCart, Star, Eye, Heart } from 'lucide-react';
 
 interface ProductProps {
   product: ProductType;
+  viewMode?: 'grid' | 'list';
 }
 
-const Product: React.FC<ProductProps> = ({ product }) => {
+const Product: React.FC<ProductProps> = ({ product, viewMode = 'grid' }) => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [imageError, setImageError] = useState(false);
   
@@ -49,6 +50,116 @@ const Product: React.FC<ProductProps> = ({ product }) => {
   const productImage = !imageError && product.images?.[0] 
     ? product.images[0] 
     : defaultImage;
+
+  if (viewMode === 'list') {
+    return (
+      <div className="group bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300">
+        <div className="flex">
+          {/* Image */}
+          <div className="relative w-48 h-48 flex-shrink-0 bg-gray-50">
+            <img
+              src={productImage}
+              alt={product.name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              onError={() => setImageError(true)}
+            />
+            
+            {/* Badges */}
+            <div className="absolute top-3 left-3 flex flex-col space-y-2">
+              {hasDiscount && (
+                <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  -{discountPercentage}%
+                </span>
+              )}
+              {product.featured && (
+                <span className="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  Featured
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="flex-1 p-6 flex flex-col justify-between">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded-full">
+                  {product.category}
+                </span>
+                <span className="text-sm text-gray-500">{product.brand}</span>
+              </div>
+              
+              <Link to={`/product/${product._id}`}>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors duration-200">
+                  {product.name}
+                </h3>
+              </Link>
+              
+              <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+              
+              {/* Rating */}
+              <div className="flex items-center mb-4">
+                <div className="flex items-center">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-4 w-4 ${
+                        i < Math.floor(product.rating)
+                          ? 'text-yellow-400 fill-current'
+                          : 'text-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-sm text-gray-600 ml-2">
+                  ({product.reviewCount})
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <span className="text-2xl font-bold text-blue-600">
+                  ${currentPrice.toFixed(2)}
+                </span>
+                {hasDiscount && (
+                  <span className="text-lg text-gray-500 line-through">
+                    ${product.price.toFixed(2)}
+                  </span>
+                )}
+              </div>
+              
+              <button
+                onClick={handleAddToCart}
+                disabled={isAddingToCart || product.stock === 0 || !isAuthenticated}
+                className={`flex items-center space-x-2 py-2 px-4 rounded-lg font-medium transition-all duration-200 ${
+                  product.stock === 0 || !isAuthenticated
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-blue-600 hover:bg-blue-700 text-white hover:shadow-md'
+                }`}
+              >
+                {isAddingToCart ? (
+                  <div className="spinner border-white"></div>
+                ) : (
+                  <>
+                    <ShoppingCart className="h-4 w-4" />
+                    <span>
+                      {!isAuthenticated 
+                        ? 'Login' 
+                        : product.stock === 0 
+                          ? 'Out of Stock' 
+                          : 'Add to Cart'
+                      }
+                    </span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="group bg-white rounded-xl shadow-sm border border-secondary-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">

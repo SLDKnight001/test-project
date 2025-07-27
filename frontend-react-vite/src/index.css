@@ -5,46 +5,18 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: rgb(229 231 235);
   }
   
   body {
-    @apply bg-background text-foreground font-sans;
+    background-color: rgb(248 250 252);
+    color: rgb(15 23 42);
+    font-family: 'Inter', system-ui, sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
   html {
     scroll-behavior: smooth;
-  }
-}
-
-@layer components {
-  .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
-  }
-  
-  .btn-secondary {
-    @apply bg-secondary-100 hover:bg-secondary-200 text-secondary-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2;
-  }
-  
-  .btn-outline {
-    @apply border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
-  }
-  
-  .input-field {
-    @apply w-full px-3 py-2 border border-secondary-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200;
-  }
-  
-  .card {
-    @apply bg-white rounded-xl shadow-sm border border-secondary-200 p-6 transition-shadow duration-200 hover:shadow-md;
-  }
-  
-  .gradient-bg {
-    @apply bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800;
-  }
-  
-  .text-gradient {
-    @apply bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent;
   }
 }
 
@@ -54,54 +26,85 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-secondary-100;
+  background-color: rgb(241 245 249);
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-secondary-400 rounded-full;
+  background-color: rgb(148 163 184);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-secondary-500;
+  background-color: rgb(100 116 139);
 }
 
 /* Loading spinner */
 .spinner {
-  @apply inline-block w-4 h-4 border-2 border-current border-r-transparent rounded-full animate-spin;
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Animations */
-.animate-pulse-slow {
-  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-/* Form validation styles */
-.error-message {
-  @apply text-red-500 text-sm mt-1;
+@keyframes slideUp {
+  from { 
+    transform: translateY(20px); 
+    opacity: 0; 
+  }
+  to { 
+    transform: translateY(0); 
+    opacity: 1; 
+  }
 }
 
-.success-message {
-  @apply text-green-500 text-sm mt-1;
+@keyframes bounceIn {
+  0% { 
+    transform: scale(0.3); 
+    opacity: 0; 
+  }
+  50% { 
+    transform: scale(1.05); 
+  }
+  70% { 
+    transform: scale(0.9); 
+  }
+  100% { 
+    transform: scale(1); 
+    opacity: 1; 
+  }
 }
 
-/* Product grid responsive */
-.product-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6;
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
 }
 
-/* Mobile menu animation */
-.mobile-menu-enter {
-  @apply transform translate-x-full;
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
 }
 
-.mobile-menu-enter-active {
-  @apply transform translate-x-0 transition-transform duration-300 ease-in-out;
+.animate-bounce-in {
+  animation: bounceIn 0.6s ease-out;
 }
 
-.mobile-menu-exit {
-  @apply transform translate-x-0;
-}
-
-.mobile-menu-exit-active {
-  @apply transform translate-x-full transition-transform duration-300 ease-in-out;
+/* Line clamp utility */
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
