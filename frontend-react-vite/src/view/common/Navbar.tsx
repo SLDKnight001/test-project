@@ -5,7 +5,7 @@ import { RootState, AppDispatch } from '../../store/store';
 import { logout } from '../../slices/authSlice';
 import { fetchCart } from '../../slices/cartSlice';
 import { 
-  Search, 
+  Search,
   ShoppingCart, 
   User, 
   Menu, 
@@ -13,7 +13,8 @@ import {
   LogOut, 
   Settings,
   Package,
-  Heart,
+  Heart, 
+  ShoppingBag,
   ChevronDown
 } from 'lucide-react';
 
@@ -146,6 +147,16 @@ const Navbar: React.FC = () => {
               </Link>
             )}
 
+            {/* Wishlist */}
+            {isAuthenticated && (
+              <Link 
+                to="/wishlist" 
+                className="p-2 text-gray-700 hover:text-blue-600 transition-colors duration-200"
+              >
+                <Heart className="h-6 w-6" />
+              </Link>
+            )}
+
             {/* User Menu */}
             {isAuthenticated ? (
               <div className="relative">
@@ -196,6 +207,15 @@ const Navbar: React.FC = () => {
                     >
                       <Package className="h-4 w-4" />
                       <span>My Orders</span>
+                    </Link>
+
+                    <Link
+                      to="/wishlist"
+                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors duration-200"
+                      onClick={() => setIsUserMenuOpen(false)}
+                    >
+                      <Heart className="h-4 w-4" />
+                      <span>Wishlist</span>
                     </Link>
 
                     {user?.role === 'admin' && (

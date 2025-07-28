@@ -6,6 +6,7 @@ import { addToCart } from '../../slices/cartSlice';
 import { Product as ProductType } from '../../model/CartItem';
 import { ShoppingCart, Star, Eye, Heart } from 'lucide-react';
 
+
 interface ProductProps {
   product: ProductType;
   viewMode?: 'grid' | 'list';
@@ -14,6 +15,7 @@ interface ProductProps {
 const Product: React.FC<ProductProps> = ({ product, viewMode = 'grid' }) => {
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [isInWishlist, setIsInWishlist] = useState(false);
   
   const dispatch = useDispatch<AppDispatch>();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -40,6 +42,30 @@ const Product: React.FC<ProductProps> = ({ product, viewMode = 'grid' }) => {
     }
   };
 
+  const handleWishlistToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isAuthenticated) {
+      return;
+    }
+
+    // Get current wishlist from localStorage
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    
+    if (isInWishlist) {
+      // Remove from wishlist
+      const updated = wishlist.filter((item: any) => item._id !== product._id);
+      localStorage.setItem('wishlist', JSON.stringify(updated));
+      setIsInWishlist(false);
+    } else {
+      // Add to wishlist
+      wishlist.push({ ...product, addedAt: new Date().toISOString() });
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      setIsInWishlist(true);
+    }
+  };
+
   const currentPrice = product.discountPrice || product.price;
   const hasDiscount = product.discountPrice && product.discountPrice < product.price;
   const discountPercentage = hasDiscount 
@@ -50,6 +76,13 @@ const Product: React.FC<ProductProps> = ({ product, viewMode = 'grid' }) => {
   const productImage = !imageError && product.images?.[0] 
     ? product.images[0] 
     : defaultImage;
+
+  // Check if product is in wishlist on component mount
+  React.useEffect(() => {
+    const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+    setIsInWishlist(wishlist.some((item: any) => item._id === product._id));
+  }, [product._id]);
+
 
   if (viewMode === 'list') {
     return (
@@ -195,7 +228,12 @@ const Product: React.FC<ProductProps> = ({ product, viewMode = 'grid' }) => {
           {/* Quick Actions */}
           <div className="absolute top-3 right-3 flex flex-col space-y-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button className="p-2 bg-white rounded-full shadow-md hover:bg-secondary-50 transition-colors duration-200">
-              <Heart className="h-4 w-4 text-secondary-600" />
+              <button
+                onClick={handleWishlistToggle}
+                className="p-2 bg-white rounded-full shadow-md hover:bg-gray-50 transition-colors duration-200"
+              >
+                <Heart className={`h-4 w-4 ${isInWishlist ? 'text-red-500 fill-current' : 'text-gray-600'}`} />
+              </button>
             </button>
             <Link 
               to={`/product/${product._id}`}

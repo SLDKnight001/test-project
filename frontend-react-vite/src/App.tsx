@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import AdminLayout from './view/pages/Admin/AdminLayout';
 import { AppDispatch, RootState } from './store/store';
 import { fetchUserProfile } from './slices/authSlice';
 import { isAuthenticated, getUserRole } from './auth/auth';
@@ -16,6 +17,12 @@ import Login from './view/pages/Login';
 import Register from './view/pages/Register';
 import Products from './view/pages/Products';
 import ProductDetail from './view/pages/ProductDetail';
+import Checkout from './view/pages/Checkout';
+import Orders from './view/pages/Orders';
+import Profile from './view/pages/Profile';
+import Wishlist from './view/pages/Wishlist';
+import AdminDashboard from './view/pages/Admin/Dashboard';
+
 import Cart from './view/pages/Cart';
 
 // Protected Route Component
@@ -96,6 +103,21 @@ const App: React.FC = () => {
             <Route path="products" element={<Products />} />
             <Route path="product/:id" element={<ProductDetail />} />
             
+            {/* Checkout Route */}
+            <Route path="checkout" element={
+              <ProtectedRoute>
+                <Checkout />
+              </ProtectedRoute>
+            } />
+            
+            {/* Wishlist Route */}
+            <Route path="wishlist" element={
+              <ProtectedRoute>
+                <Wishlist />
+              </ProtectedRoute>
+            } />
+            
+            
             {/* Protected Routes */}
             <Route path="cart" element={
               <ProtectedRoute>
@@ -105,46 +127,37 @@ const App: React.FC = () => {
             
             <Route path="profile" element={
               <ProtectedRoute>
-                <div className="min-h-screen flex items-center justify-center">
-                  <div className="text-center">
-                    <h1 className="text-3xl font-bold text-secondary-900 mb-4">Profile</h1>
-                    <p className="text-secondary-600">Coming soon...</p>
-                  </div>
-                </div>
+                <Profile />
               </ProtectedRoute>
             } />
             
             <Route path="orders" element={
               <ProtectedRoute>
-                <div className="min-h-screen flex items-center justify-center">
-                  <div className="text-center">
-                    <h1 className="text-3xl font-bold text-secondary-900 mb-4">My Orders</h1>
-                    <p className="text-secondary-600">Coming soon...</p>
-                  </div>
-                </div>
+                <Orders />
               </ProtectedRoute>
             } />
-            
-            {/* Admin Routes */}
-            <Route path="admin/*" element={
-              <ProtectedRoute requiredRole="admin">
-                <div className="min-h-screen flex items-center justify-center">
-                  <div className="text-center">
-                    <h1 className="text-3xl font-bold text-secondary-900 mb-4">Admin Panel</h1>
-                    <p className="text-secondary-600">Coming soon...</p>
-                  </div>
-                </div>
-              </ProtectedRoute>
-            } />
+          </Route>
+          
+          {/* Admin Routes */}
+          <Route path="/admin" element={
+            <ProtectedRoute requiredRole="admin">
+              <AdminLayout />
+            </ProtectedRoute>
+          }>
+            <Route index element={<AdminDashboard />} />
+            <Route path="products" element={<div className="p-8 text-center">Products Management - Coming Soon</div>} />
+            <Route path="orders" element={<div className="p-8 text-center">Orders Management - Coming Soon</div>} />
+            <Route path="users" element={<div className="p-8 text-center">Users Management - Coming Soon</div>} />
+            <Route path="categories" element={<div className="p-8 text-center">Categories Management - Coming Soon</div>} />
           </Route>
 
           {/* Catch all route */}
           <Route path="*" element={
-            <div className="min-h-screen flex items-center justify-center bg-secondary-50">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
               <div className="text-center">
-                <h1 className="text-6xl font-bold text-secondary-900 mb-4">404</h1>
-                <p className="text-xl text-secondary-600 mb-8">Page not found</p>
-                <a href="/" className="btn-primary">
+                <h1 className="text-6xl font-bold text-gray-900 mb-4">404</h1>
+                <p className="text-xl text-gray-600 mb-8">Page not found</p>
+                <a href="/" className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200">
                   Go Home
                 </a>
               </div>
